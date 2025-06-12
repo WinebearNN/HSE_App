@@ -13,6 +13,6 @@ open class NavigationScreen(val route: String, val title: String, val icon: Imag
     object Ticket : NavigationScreen("ticket", "Мероприятия", Icons.Default.Favorite)
     object Home : NavigationScreen("home", "Главная", Icons.Default.Home)
     object Authentication : NavigationScreen("authentication", "Аутентификация", Icons.Default.Warning)
-    object Event : NavigationScreen("event","Мероприятие", Icons.Default.Warning)
+    object Event : NavigationScreen("event/{eventId}","Мероприятие", Icons.Default.Warning)
 
 }

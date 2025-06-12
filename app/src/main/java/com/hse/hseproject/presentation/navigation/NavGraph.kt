@@ -2,8 +2,10 @@ package com.hse.hseproject.presentation.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.hse.hseproject.presentation.ui.authentication.AuthenticationScreen
 import com.hse.hseproject.presentation.ui.event.EventScreen
 import com.hse.hseproject.presentation.ui.logIn.LogInScreen
@@ -32,11 +34,17 @@ fun AppNavGraph(navController: NavHostController) {
         composable(NavigationScreen.LogIn.route) {
             LogInScreen(navController)
         }
-        composable(NavigationScreen.Authentication.route) {
+        composable(
+            route = NavigationScreen.Authentication.route
+        ) {
             AuthenticationScreen(navController)
         }
-        composable(NavigationScreen.Event.route) {
-            EventScreen(navController)
+        composable(
+            route = NavigationScreen.Event.route,
+            arguments = listOf(navArgument("eventId") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val eventId = backStackEntry.arguments?.getString("eventId") ?: ""
+            EventScreen(navController = navController, eventId = eventId)
         }
 
 

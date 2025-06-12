@@ -56,6 +56,10 @@ android {
 }
 
 dependencies {
+
+    //Generate qr code
+    implementation(libs.zxing.android.embedded)
+
     // ObjectBox
     implementation(libs.objectbox.android)
     implementation(libs.objectbox.kotlin)

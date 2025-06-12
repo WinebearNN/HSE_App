@@ -6,7 +6,7 @@ import io.objectbox.annotation.Id
 @Entity
 data class Guest (
     @Id var id:Long = 0,
-    var email: String,
-    var phoneNumber: String,
-    var name: String
+    val email: String,
+    val phoneNumber: String,
+    val name: String
 )

@@ -45,6 +45,7 @@ import coil3.request.crossfade
 @Composable
 fun EventScreen(
     navController: NavController,
+    eventId:String
 ) {
 
     val colorScheme = MaterialTheme.colorScheme
@@ -358,10 +359,10 @@ fun EventScreen(
 
 }
 
-@Preview(showBackground = true)
-@Composable
-private fun AdvertisementPreview() {
-    EventScreen(rememberNavController())
-}
+//@Preview(showBackground = true)
+//@Composable
+//private fun AdvertisementPreview() {
+//    EventScreen(rememberNavController())
+//}
 
 

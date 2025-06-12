@@ -9,15 +9,15 @@ import io.objectbox.converter.PropertyConverter
 @Entity
 data class Student (
     @Id var id:Long = 0,
-    var globalId:Long,
-    var email: String,
-    var password: String,
-    var phoneNumber: String,
+    val globalId:Long,
+    val email: String,
+    val password: String,
+    val phoneNumber: String,
 
     @Convert(converter = StudyYearConverter::class, dbType = Int::class)
-    var studyYear: StudyYear,
+    val studyYear: StudyYear,
 
-    var name: String
+    val name: String
 )
 
 
