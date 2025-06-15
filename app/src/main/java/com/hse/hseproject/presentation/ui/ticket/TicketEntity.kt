@@ -19,6 +19,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ColorScheme
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -40,19 +41,23 @@ import androidx.navigation.NavController
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.WriterException
 import com.google.zxing.qrcode.QRCodeWriter
+import com.hse.hseproject.domain.entity.Format
+import com.hse.hseproject.domain.entity.Ticket
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 @Composable
 fun TicketEntityScreen(
-    colorScheme: ColorScheme,
-    navController: NavController
+    navController: NavController,
+    ticket:Ticket
 ) {
+    val colorScheme = MaterialTheme.colorScheme
 
     var openDialog by remember { mutableStateOf(false) }
     var qrBitmap by remember { mutableStateOf<Bitmap?>(null) }
     var isLoading by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf<String?>(null) }
+
 
     if (openDialog) {
 
@@ -62,7 +67,8 @@ fun TicketEntityScreen(
                 try {
                     // Generate QR code on background thread
                     qrBitmap = withContext(Dispatchers.Default) {
-                        generateQRCode("EVENT_ID:12345|USER:user@example.com")
+//                        generateQRCode("EVENT_ID:12345|USER:user@example.com")
+                        generateQRCode("${ticket.ticketGlobalId}")
                     }
                 } catch (e: Exception) {
                     errorMessage = "Не удалось создать QR-код: ${e.message}"
@@ -122,7 +128,7 @@ fun TicketEntityScreen(
                         .fillMaxWidth(),
                     onClick = { openDialog = false },
                 ) {
-                    Text("123456789123456789", fontSize = 18.sp)
+                    Text("${ticket.ticketGlobalId}", fontSize = 18.sp)
                 }
             }
         )
@@ -150,7 +156,7 @@ fun TicketEntityScreen(
                 .clickable(
                     enabled = true,
                     onClick = {
-                        navController.navigate("event/${999}") {
+                        navController.navigate("event/${ticket.eventGlobalId}") {
                             launchSingleTop = true
                         }
                     }
@@ -167,7 +173,7 @@ fun TicketEntityScreen(
                     .wrapContentHeight(
                         align = Alignment.Top
                     ),
-                text = "Yandex",
+                text = ticket.eventCompanyName,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 textAlign = TextAlign.Start,
@@ -183,7 +189,7 @@ fun TicketEntityScreen(
                     .wrapContentHeight(
                         align = Alignment.Top
                     ),
-                text = "День открытых дверей.",
+                text = ticket.eventName,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 textAlign = TextAlign.Start,
@@ -195,7 +201,7 @@ fun TicketEntityScreen(
                     .padding(
                         vertical = 1.dp
                     ),
-                text = "26 Июня 2025,  17:00",
+                text = "${ticket.eventDate},  ${ticket.eventTimeStart}",
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 textAlign = TextAlign.End,
@@ -228,13 +234,14 @@ fun TicketEntityScreen(
                         .padding(
                             vertical = 1.dp,
                         ),
-                    text = "ул. Родионова 186",
+                    text = if (ticket.eventFormat != Format.ONLINE) ticket.eventAddress else Format.ONLINE.nameFormat,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     textAlign = TextAlign.End,
                     fontSize = 14.sp
                 )
             }
+
 
 
         }

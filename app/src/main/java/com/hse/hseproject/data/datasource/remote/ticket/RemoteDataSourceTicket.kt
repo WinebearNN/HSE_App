@@ -5,6 +5,7 @@ import com.google.gson.Gson
 import com.hse.hseproject.data.network.apiService.ApiServiceTicket
 import com.hse.hseproject.data.network.request.ApiRequest
 import com.hse.hseproject.data.network.request.TicketRequest
+import com.hse.hseproject.domain.entity.Format
 import com.hse.hseproject.domain.entity.Ticket
 import jakarta.inject.Inject
 import kotlinx.coroutines.Dispatchers
@@ -14,8 +15,8 @@ class RemoteDataSourceTicket @Inject constructor(
     private val apiServiceTicket: ApiServiceTicket
 ) {
 
-    companion object{
-        private const val TAG="RemoteDataSourceTicket"
+    companion object {
+        private const val TAG = "RemoteDataSourceTicket"
     }
 
     suspend fun getTicketsByUserGlobalId(
@@ -24,7 +25,7 @@ class RemoteDataSourceTicket @Inject constructor(
         runCatching {
             val response = apiServiceTicket.getTicketsByUserGlobalId(userGlobalId)
             response.message
-        }.onFailure {e->
+        }.onFailure { e ->
             Log.e(TAG, "An error occurred while fetching tickets", e)
             Result.failure<Throwable>(e)
         }
@@ -32,13 +33,20 @@ class RemoteDataSourceTicket @Inject constructor(
 
     suspend fun ticketCreate(
         ticket: Ticket
-    ): Result<String> = withContext(Dispatchers.IO){
+    ): Result<String> = withContext(Dispatchers.IO) {
         runCatching {
+
 
             val ticketRequest = TicketRequest(
                 ticketGlobalId = ticket.ticketGlobalId,
-                event = ticket.event,
-                userGlobalId = ticket.userGlobalId
+                userGlobalId = ticket.userGlobalId,
+                eventGlobalId = ticket.eventGlobalId,
+                eventName = ticket.eventName,
+                eventCompanyName = ticket.eventCompanyName,
+                eventAddress = ticket.eventAddress,
+                eventDate = ticket.eventDate,
+                eventTimeStart = ticket.eventTimeStart,
+                eventFormat = ticket.eventFormat,
             )
 
             val request = ApiRequest(
@@ -47,7 +55,7 @@ class RemoteDataSourceTicket @Inject constructor(
 
             val response = apiServiceTicket.create(request)
             response.message
-        }.onFailure { e->
+        }.onFailure { e ->
             Log.e(TAG, "An error occurred while creating ticket", e)
             Result.failure<Throwable>(e)
         }
@@ -55,13 +63,19 @@ class RemoteDataSourceTicket @Inject constructor(
 
     suspend fun ticketDelete(
         ticket: Ticket
-    ): Result<String> = withContext(Dispatchers.IO){
+    ): Result<String> = withContext(Dispatchers.IO) {
         runCatching {
 
             val ticketRequest = TicketRequest(
                 ticketGlobalId = ticket.ticketGlobalId,
-                event = ticket.event,
-                userGlobalId = ticket.userGlobalId
+                userGlobalId = ticket.userGlobalId,
+                eventGlobalId = ticket.eventGlobalId,
+                eventName = ticket.eventName,
+                eventCompanyName = ticket.eventCompanyName,
+                eventAddress = ticket.eventAddress,
+                eventDate = ticket.eventDate,
+                eventTimeStart = ticket.eventTimeStart,
+                eventFormat = ticket.eventFormat,
             )
 
             val request = ApiRequest(
@@ -70,7 +84,7 @@ class RemoteDataSourceTicket @Inject constructor(
 
             val response = apiServiceTicket.delete(request)
             response.message
-        }.onFailure { e->
+        }.onFailure { e ->
             Log.e(TAG, "An error occurred while deleting ticket", e)
             Result.failure<Throwable>(e)
         }

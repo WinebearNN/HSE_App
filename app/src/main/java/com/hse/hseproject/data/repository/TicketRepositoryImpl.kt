@@ -40,7 +40,13 @@ class TicketRepositoryImpl @Inject constructor(
                     Ticket(
                         ticketGlobalId = ticketResponse.ticketGlobalId,
                         userGlobalId = ticketResponse.userGlobalId,
-                        event = ticketResponse.event
+                        eventGlobalId = ticketResponse.eventGlobalId,
+                        eventName = ticketResponse.eventName,
+                        eventCompanyName = ticketResponse.eventCompanyName,
+                        eventAddress = ticketResponse.eventAddress,
+                        eventDate = ticketResponse.eventDate,
+                        eventTimeStart = ticketResponse.eventTimeStart,
+                        eventFormat = ticketResponse.eventFormat,
                     )
                 )
             }

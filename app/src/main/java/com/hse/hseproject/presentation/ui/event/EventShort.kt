@@ -2,7 +2,6 @@ package com.hse.hseproject.presentation.ui.event
 
 import android.util.Log
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,16 +15,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import coil3.EventListener
 import coil3.ImageLoader
 import coil3.compose.AsyncImage
@@ -33,16 +29,19 @@ import coil3.request.ErrorResult
 import coil3.request.ImageRequest
 import coil3.request.SuccessResult
 import coil3.request.crossfade
-import com.hse.hseproject.presentation.navigation.NavigationScreen
+import com.hse.hseproject.domain.entity.Event
+import com.hse.hseproject.domain.entity.Format
+import java.text.SimpleDateFormat
+import java.util.Date
 
 @Composable
 fun EventShortScreen(
     navController: NavController,
+    event: Event
 ) {
 
     val colorScheme = MaterialTheme.colorScheme
 
-    val context = LocalContext.current
 
     val imageLoader = ImageLoader.Builder(LocalContext.current)
         .eventListener(object : EventListener() {
@@ -63,11 +62,9 @@ fun EventShortScreen(
     Column(
         modifier = Modifier
             .padding(horizontal = 16.dp, vertical = 16.dp)
-            .clickable{
-                navController.navigate(
-                    NavigationScreen.Event.route
-                ){
-                    launchSingleTop=true
+            .clickable {
+                navController.navigate("event/${event.eventGlobalId}") {
+                    launchSingleTop = true
                 }
             }
             .background(
@@ -96,7 +93,8 @@ fun EventShortScreen(
             imageLoader = imageLoader,
             model = ImageRequest.Builder(LocalContext.current)
 //                .data("https://i.imgur.com/XK5f6ex.jpeg")
-                .data("https://static.tildacdn.com/tild3762-6637-4538-b636-366465313963/HSE-17471_Preview_2_.jpg")
+//                .data("https://static.tildacdn.com/tild3762-6637-4538-b636-366465313963/HSE-17471_Preview_2_.jpg")
+                .data(event.photoLinks.first())
                 .crossfade(true)
                 .build(),
             contentScale = ContentScale.FillBounds,
@@ -108,12 +106,12 @@ fun EventShortScreen(
 
         Text(
             modifier = Modifier
-                .padding(top=10.dp, bottom = 4.dp, end = 2.dp, start = 2.dp)
+                .padding(top = 10.dp, bottom = 4.dp, end = 2.dp, start = 2.dp)
 //                .background(
 //                    color = colorScheme.primaryContainer,
 //                )
                 .fillMaxWidth(),
-            text = "ВШЭ. День открытых дверей.",
+            text = event.companyName + " " + event.name,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
             textAlign = TextAlign.Start,
@@ -141,7 +139,7 @@ fun EventShortScreen(
                         .padding(
                             horizontal = 2.dp,
                         ),
-                    text = "г. Нижний Новгород",
+                    text = if (event.format == Format.ONLINE) Format.ONLINE.nameFormat else event.city,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     textAlign = TextAlign.Start,
@@ -154,7 +152,7 @@ fun EventShortScreen(
                             horizontal = 2.dp,
                             vertical = 2.dp
                         ),
-                    text = "ул. Родионова 186",
+                    text = event.address,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     textAlign = TextAlign.Start,
@@ -173,7 +171,8 @@ fun EventShortScreen(
                         .padding(
                             horizontal = 2.dp,
                         ),
-                    text = "26 июня 2025",
+                    text = (SimpleDateFormat("dd/MM/yyyy", java.util.Locale.US)
+                        .format(Date(event.date))),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     textAlign = TextAlign.End,
@@ -186,7 +185,7 @@ fun EventShortScreen(
                             horizontal = 2.dp,
                             vertical = 2.dp
                         ),
-                    text = "17:00 - 18:30",
+                    text = event.timeStart + " - " + event.timeEnd,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     textAlign = TextAlign.End,
@@ -202,8 +201,8 @@ fun EventShortScreen(
 
 }
 
-@Preview(showBackground = true)
-@Composable
-private fun AdvertisementShortPreview() {
-    EventShortScreen(navController = rememberNavController())
-}
+//@Preview(showBackground = true)
+//@Composable
+//private fun AdvertisementShortPreview() {
+//    EventShortScreen(navController = rememberNavController())
+//}

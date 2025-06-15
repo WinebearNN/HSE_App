@@ -5,18 +5,26 @@ import android.util.Log
 import com.getkeepsafe.relinker.ReLinker
 import com.hse.hseproject.data.datasource.local.guest.LocalDataSourceGuest
 import com.hse.hseproject.data.datasource.local.student.LocalDataSourceStudent
+import com.hse.hseproject.data.datasource.remote.event.RemoteDataSourceEvent
 import com.hse.hseproject.data.datasource.remote.guest.RemoteDataSourceGuest
 import com.hse.hseproject.data.datasource.remote.student.RemoteDataSourceStudent
+import com.hse.hseproject.data.datasource.remote.ticket.RemoteDataSourceTicket
+import com.hse.hseproject.data.network.apiService.ApiServiceEvent
 import com.hse.hseproject.data.network.apiService.ApiServiceGuest
 import com.hse.hseproject.data.network.apiService.ApiServiceProvider
 import com.hse.hseproject.data.network.apiService.ApiServiceStudent
+import com.hse.hseproject.data.network.apiService.ApiServiceTicket
+import com.hse.hseproject.data.repository.EventRepositoryImpl
 import com.hse.hseproject.domain.entity.MyObjectBox
 import dagger.Module
 import dagger.Provides
 import com.hse.hseproject.data.repository.StudentRepositoryImpl
 import com.hse.hseproject.data.repository.GuestRepositoryImpl
+import com.hse.hseproject.data.repository.TicketRepositoryImpl
+import com.hse.hseproject.domain.repository.EventRepository
 import com.hse.hseproject.domain.repository.GuestRepository
 import com.hse.hseproject.domain.repository.StudentRepository
+import com.hse.hseproject.domain.repository.TicketRepository
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
@@ -49,11 +57,35 @@ object AppModule {
         return ApiServiceProvider.apiServiceGuest
     }
 
+    @Provides
+    @Singleton
+    fun provideApiServiceTicket(): ApiServiceTicket {
+        return ApiServiceProvider.apiServiceTicket
+    }
+
+    @Provides
+    @Singleton
+    fun provideApiServiceEvent(): ApiServiceEvent {
+        return ApiServiceProvider.apiServiceEvent
+    }
+
 
     @Provides
     @Singleton
     fun provideRemoteDataSourceStudent(apiServiceStudent: ApiServiceStudent): RemoteDataSourceStudent{
-        return RemoteDataSourceStudent(apiServiceStudent)  // Предоставляем RemoteDataSource
+        return RemoteDataSourceStudent(apiServiceStudent)
+    }
+
+    @Provides
+    @Singleton
+    fun provideRemoteDataSourceTicket(apiServiceTicket: ApiServiceTicket): RemoteDataSourceTicket{
+        return RemoteDataSourceTicket(apiServiceTicket)
+    }
+
+    @Provides
+    @Singleton
+    fun provideRemoteDataSourceEvent(apiServiceEvent: ApiServiceEvent): RemoteDataSourceEvent{
+        return RemoteDataSourceEvent(apiServiceEvent)
     }
 
 
@@ -71,6 +103,25 @@ object AppModule {
     }
 
 
+    @Provides
+    @Singleton
+    fun provideTicketRepository(
+        remoteDataSourceTicket: RemoteDataSourceTicket,
+    ): TicketRepository {
+        return TicketRepositoryImpl(
+            remoteDataSourceTicket
+        )
+    }
+
+    @Provides
+    @Singleton
+    fun provideEventRepository(
+        remoteDataSourceEvent: RemoteDataSourceEvent,
+    ): EventRepository {
+        return EventRepositoryImpl(
+            remoteDataSourceEvent
+        )
+    }
 
 
     @Provides
