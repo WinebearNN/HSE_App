@@ -31,6 +31,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.hse.hseproject.domain.entity.Event
+import com.hse.hseproject.domain.entity.EventDuration
+import com.hse.hseproject.domain.entity.Format
 import com.hse.hseproject.presentation.ui.event.EventShortScreen
 
 private const val TAG = "HomeScreen"
@@ -40,13 +43,48 @@ fun HomeScreen(
     navController: NavController,
 ) {
 
-    val cities = listOf("Нижний Новгород", "Санкт Петербург", "Москва", "Пермь","Любой")
-    val formats = listOf("Очный","Онлайн","Любой")
-    val durations = listOf("менее 1 часа","менее 1,5 часов","менее 2 часов","Любой")
+    val eventsList=listOf(
+        Event(
+            eventGlobalId = 123456789,
+            name = "День открытых вдверей.",
+            companyName = "ВШЭ",
+            description = "День открытых дверей Высшей школы экономики – это твой шанс узнать всё о ведущем вузе страны: программы обучения, поступление, стипендии, стажировки, карьера и студенческая жизнь! Встречайся с преподавателями, участвуй в мастер-классах, задавай вопросы и почувствуй атмосферу ВШЭ! Узнай, как построить успешное будущее с дипломом ВШЭ! Приходи, регистрируйся, поступай!",
+            photoLinks = listOf(
+                "https://www.hse.ru/data/2022/09/07/1552691052/1118х745.png",
+                "https://static.tildacdn.com/tild3762-6637-4538-b636-366465313963/HSE-17471_Preview_2_.jpg",
+            ),
+            city = "г. Нижний Новгород",
+            address = "ул. Львовская 1В",
+            date = 1757548800000,
+            duration = EventDuration.ONE_HOUR,
+            timeStart = "10:00",
+            timeEnd = "16:00",
+            format = Format.IN_PERSON
+        ),
+        Event(
+            eventGlobalId = 987654321,
+            name = "Лекция. Яндекс Еда.",
+            companyName = "Яндекс",
+            description = "День открытых дверей Яндекса – это возможность познакомиться с одной из ведущих IT-компаний России. Узнайте о стажировках, карьерных возможностях, корпоративной культуре и проектах компании. Пообщайтесь с сотрудниками, задайте вопросы и получите советы по развитию в IT. Приходите и узнайте, как начать карьеру в Яндексе!",
+            photoLinks = listOf(
+                "https://dpru.obs.ru-moscow-1.hc.sbercloud.ru/images/article/2022/08/11/63bc981c-84c0-4df1-8730-4c64ca214ee8.jpg",
+            ),
+            city = "г. Москва",
+            address = "ул. Льва Толстого, 16",
+            date = 1750204800000,  // 11 сентября 2025, 00:00:00 UTC
+            duration = EventDuration.TWO_HOURS,
+            timeStart = "12:00",
+            timeEnd = "14:00",
+            format = Format.ONLINE
+        )
+    )
+    val cities = listOf("Нижний Новгород", "Санкт Петербург", "Москва", "Пермь", "Любой")
+    val formats = listOf("Очный", "Онлайн", "Любой")
+    val durations = listOf("менее 1 часа", "менее 1,5 часов", "менее 2 часов", "Любой")
 
 
     var selectedCity = remember { mutableStateOf("Город") }
-    var selectedFormat= remember { mutableStateOf("Формат") }
+    var selectedFormat = remember { mutableStateOf("Формат") }
     var selectedDuration = remember { mutableStateOf("Длительность") }
     var selectedPoints = remember { mutableStateOf(false) }
 
@@ -84,7 +122,7 @@ fun HomeScreen(
 
             ) {
 
-                Box{
+                Box {
 
                     Text(
                         modifier = Modifier
@@ -104,7 +142,7 @@ fun HomeScreen(
                         text = selectedCity.value,
                         fontSize = 16.sp,
                         textAlign = TextAlign.Start,
-                        color = if (selectedCity.value=="Город") colorScheme.tertiary else colorScheme.onSecondaryContainer,
+                        color = if (selectedCity.value == "Город") colorScheme.tertiary else colorScheme.onSecondaryContainer,
                     )
 
                     DropdownMenu(
@@ -161,7 +199,7 @@ fun HomeScreen(
                             text = selectedFormat.value,
                             fontSize = 16.sp,
                             textAlign = TextAlign.Start,
-                            color = if (selectedFormat.value=="Формат") colorScheme.tertiary else colorScheme.onSecondaryContainer,
+                            color = if (selectedFormat.value == "Формат") colorScheme.tertiary else colorScheme.onSecondaryContainer,
                         )
 
                         DropdownMenu(
@@ -211,7 +249,7 @@ fun HomeScreen(
                             text = selectedDuration.value,
                             fontSize = 16.sp,
                             textAlign = TextAlign.Start,
-                            color = if (selectedDuration.value=="Длительность") colorScheme.tertiary else colorScheme.onSecondaryContainer,
+                            color = if (selectedDuration.value == "Длительность") colorScheme.tertiary else colorScheme.onSecondaryContainer,
                         )
 
 
@@ -270,7 +308,7 @@ fun HomeScreen(
 //                            .border(width = 1.dp,color = Color.Black),
                         checked = selectedPoints.value,
                         onCheckedChange = {
-                            selectedPoints.value=!selectedPoints.value
+                            selectedPoints.value = !selectedPoints.value
                         },
                         colors = CheckboxColors(
 
@@ -296,8 +334,11 @@ fun HomeScreen(
             }
         }
 
-        items(8) {
-            EventShortScreen(navController = navController)
+        items(2) { num->
+            EventShortScreen(
+                navController = navController, event = eventsList[num]
+            )
+
         }
 
     }

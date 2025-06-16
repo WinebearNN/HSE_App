@@ -44,7 +44,7 @@ fun AppNavGraph(navController: NavHostController) {
             arguments = listOf(navArgument("eventId") { type = NavType.StringType })
         ) { backStackEntry ->
             val eventId = backStackEntry.arguments?.getString("eventId") ?: ""
-            EventScreen(navController = navController, eventId = eventId)
+            EventScreen( eventId = eventId)
         }
 
 

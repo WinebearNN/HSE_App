@@ -8,11 +8,15 @@ import com.hse.hseproject.domain.useCase.event.EventUseCase
 import com.hse.hseproject.domain.useCase.ticket.TicketUseCase
 import com.hse.hseproject.presentation.viewmodel.ticket.TicketResult
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.util.Timer
+import java.util.TimerTask
 import javax.inject.Inject
+import kotlin.concurrent.timerTask
 
 @HiltViewModel
 class EventViewModel @Inject constructor(
@@ -45,15 +49,14 @@ class EventViewModel @Inject constructor(
             _eventGetResult.value = EventResult.Loading
             runCatching {
                 val prefs = context.getSharedPreferences("userPrefs", Context.MODE_PRIVATE)
-                _userGlobalId.value = prefs.getString("userGlobalId", "") ?: ""
+                _userGlobalId.value = prefs.getString("userGlobalId", "12232") ?: "12232"
             }.onSuccess {
-//                if (_userGlobalId.value.isBlank()) {
-//                    _eventGetResult.value =
-//                        EventResult.Error(Exception("Пользователь не найден"))
-//                } else {
-//                    getEventByGlobalId(eventGlobalId)
-//                }
-                getEventByGlobalId(eventGlobalId)
+                if (_userGlobalId.value.isBlank()) {
+                    _eventGetResult.value =
+                        EventResult.Error(Exception("Пользователь не найден"))
+                } else {
+                    getEventByGlobalId(eventGlobalId)
+                }
             }.onFailure { e ->
                 _eventGetResult.value = EventResult.Error(e)
             }
@@ -92,8 +95,9 @@ class EventViewModel @Inject constructor(
     }
 
     fun create(ticket: Ticket) {
+        _ticketCreateResult.value = TicketResult.Loading
         viewModelScope.launch {
-            _ticketCreateResult.value = TicketResult.Loading
+            delay(3000L)
             ticketUseCase.create(
                 ticket = ticket
             ).fold(
@@ -122,6 +126,8 @@ class EventViewModel @Inject constructor(
             )
         }
     }
+
+
 
 
 }

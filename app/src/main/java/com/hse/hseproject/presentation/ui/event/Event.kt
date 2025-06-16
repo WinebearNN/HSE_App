@@ -1,6 +1,7 @@
 package com.hse.hseproject.presentation.ui.event
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -39,6 +40,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -46,6 +48,7 @@ import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.hse.hseproject.domain.entity.Event
+import com.hse.hseproject.domain.entity.Format
 import com.hse.hseproject.domain.entity.Ticket
 import com.hse.hseproject.presentation.viewmodel.event.EventResult
 import com.hse.hseproject.presentation.viewmodel.event.EventViewModel
@@ -69,7 +72,7 @@ fun EventScreen(
     var errorLoading by remember { mutableStateOf<Throwable?>(null) }
     var loading by remember { mutableStateOf(true) }
     var event by remember { mutableStateOf<Event?>(null) }
-    var userGlobalId by remember { mutableStateOf("") }
+    val userGlobalId by viewModel.userGlobalId.collectAsState()
 
 
     var snackBarHostState by remember { mutableStateOf(SnackbarHostState()) }
@@ -94,33 +97,23 @@ fun EventScreen(
                     enabledButton = true
                 }
 
-                TicketResult.Loading -> TODO()
+                TicketResult.Loading -> {
+                    enabledButton = false
+                }
+
                 is TicketResult.TicketCreateSuccess -> {
                     scope.launch {
                         snackBarHostState.showSnackbar("Success")
                     }
                     enabledButton = true
+
                 }
 
                 is TicketResult.TicketDeleteSuccess -> TODO()
                 is TicketResult.TicketsGetByUGIDSuccess -> TODO()
             }
         }
-        LaunchedEffect(Unit) {
-            viewModel.create(
-                ticket = Ticket(
-                    userGlobalId = userGlobalId.toLong(),
-                    ticketGlobalId = 0L,
-                    eventGlobalId = event!!.eventGlobalId,
-                    eventName = event!!.name,
-                    eventAddress = event!!.address,
-                    eventFormat = event!!.format,
-                    eventDate = event!!.date,
-                    eventTimeStart = event!!.timeStart,
-                    eventCompanyName = event!!.companyName
-                )
-            )
-        }
+
 
     }
 
@@ -179,9 +172,6 @@ fun EventScreen(
                 )
             }
         } else {
-
-
-            SnackbarHost(snackBarHostState)
 
 
             val pagerState = rememberPagerState { event!!.photoLinks.size }
@@ -244,7 +234,7 @@ fun EventScreen(
                                             alignment = Alignment.TopCenter,
 //    error = painterResource(R.drawable.placeholder_2),
 //    placeholder = painterResource(R.drawable.placeholder),
-                                            contentDescription = "Фото товара",
+                                            contentDescription = "Фото",
                                             contentScale = ContentScale.FillBounds,
                                         )
                                     }
@@ -258,14 +248,12 @@ fun EventScreen(
                                     .background(
                                         color = colorScheme.primaryContainer,
                                         shape = RoundedCornerShape(
-                                            topStart = 16.dp,
-                                            topEnd = 16.dp
+                                            16.dp
                                         )
                                     )
                                     .clip(
                                         shape = RoundedCornerShape(
-                                            topStart = 16.dp,
-                                            topEnd = 16.dp
+                                            16.dp
                                         )
                                     )
                             ) {
@@ -309,31 +297,109 @@ fun EventScreen(
                                 Button(
                                     onClick = {
                                         enabledButton = !enabledButton
+                                        scope.launch {
+                                            viewModel.create(
+                                                ticket = Ticket(
+                                                    userGlobalId = 9L,
+                                                    ticketGlobalId = 0L,
+                                                    eventGlobalId = event!!.eventGlobalId,
+                                                    eventName = event!!.name,
+                                                    eventAddress = event!!.address,
+                                                    eventFormat = event!!.format,
+                                                    eventDate = event!!.date,
+                                                    eventTimeStart = event!!.timeStart,
+                                                    eventCompanyName = event!!.companyName
+                                                )
+                                            )
+                                        }
+
                                     },
                                     modifier = Modifier
                                         .padding(
                                             top = 20.dp,
-                                            bottom = 40.dp,
+                                            bottom = 20.dp,
                                             end = 16.dp,
                                             start = 16.dp
                                         )
                                         .fillMaxWidth()
-                                        .height(50.dp),
+                                        .height(50.dp)
+                                        .border(
+                                            width = 1.dp,
+                                            color = Color.Black
+                                            //TODO change color to colorScheme
+                                        ),
                                     enabled = enabledButton,
 
                                     colors = ButtonColors(
 
                                         containerColor = Color.Black,
-                                        disabledContentColor = Color.Black,
+                                        disabledContainerColor = Color.White,
+
 
                                         contentColor = Color.White,
-                                        disabledContainerColor = Color.White
+                                        disabledContentColor = Color.Black,
 
-                                    ),
+
+                                        ),
                                     shape = RoundedCornerShape(5.dp)
                                 ) {
                                     Text(
                                         text = "Записаться"
+                                    )
+                                }
+
+                                Row(
+                                    modifier = Modifier
+                                        .padding(
+                                            start = 16.dp,
+                                            bottom = 40.dp,
+                                            end = 16.dp
+                                        )
+                                        .background(
+                                            colorScheme.primaryContainer
+                                        ),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Column(
+                                        modifier = Modifier
+                                            .weight(1f)
+                                    ) {
+                                        if (event!!.format != Format.ONLINE) {
+                                            Text(
+                                                modifier = Modifier
+                                                    .padding(top = 5.dp),
+                                                text = event!!.city,
+                                                fontSize = 16.sp,
+                                                textAlign = TextAlign.Start,
+                                                letterSpacing = 0.5.sp
+                                            )
+
+                                            Text(
+                                                modifier = Modifier
+                                                    .padding(top = 5.dp),
+                                                text = event!!.address,
+                                                fontSize = 16.sp,
+                                                textAlign = TextAlign.Start,
+                                                letterSpacing = 0.5.sp
+                                            )
+                                        } else {
+                                            Text(
+                                                modifier = Modifier
+                                                    .padding(top = 5.dp),
+                                                text = event!!.format.nameFormat,
+                                                fontSize = 16.sp,
+                                                textAlign = TextAlign.Start,
+                                                letterSpacing = 0.5.sp
+                                            )
+                                        }
+                                    }
+                                    Text(
+                                        modifier = Modifier
+                                            .padding(top = 5.dp),
+                                        textAlign = TextAlign.End,
+                                        text = event!!.timeStart + " - " + event!!.timeEnd,
+                                        fontSize = 16.sp,
+                                        letterSpacing = 0.5.sp
                                     )
                                 }
 
@@ -364,12 +430,10 @@ fun EventScreen(
                                             horizontal = 16.dp
                                         ),
                                     text = event!!.description
-//                                    text = "Продакт-менеджмент — развивающееся востребованное направление в России и за рубежом. Эксперты, способные управлять продуктом на всех этапах его жизненного цикла высоко ценятся в корпорациях и стартапах.\n" +
-//                                            "\n" +
-//                                            "Наша программа дает не только фундаментальные знания в продакт менеджменте, но и благодаря преподавателям — практикам из индустрии, учит студентов на наиболее актуальных кейсах из их бизнес-практики.",
                                 )
                             }
                         }
+                        SnackbarHost(snackBarHostState)
 
                     }
                 }

@@ -42,12 +42,13 @@ class TicketViewModel @Inject constructor(
                 val prefs = context.getSharedPreferences("userPrefs", Context.MODE_PRIVATE)
                 _userGlobalId.value = prefs.getString("userGlobalId", "") ?: ""
             }.onSuccess {
-                if (_userGlobalId.value.isBlank()) {
-                    _ticketsGetByUGIDResult.value =
-                        TicketResult.Error(Exception("Пользователь не найден"))
-                } else {
-                    getTicketsByUserGlobalId(_userGlobalId.value)
-                }
+//                if (_userGlobalId.value.isBlank()) {
+//                    _ticketsGetByUGIDResult.value =
+//                        TicketResult.Error(Exception("Пользователь не найден"))
+//                } else {
+//                    getTicketsByUserGlobalId(_userGlobalId.value)
+//                }
+                getTicketsByUserGlobalId(_userGlobalId.value)
             }.onFailure { e ->
                 _ticketsGetByUGIDResult.value = TicketResult.Error(e)
             }

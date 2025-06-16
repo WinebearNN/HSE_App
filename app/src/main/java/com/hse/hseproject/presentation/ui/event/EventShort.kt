@@ -30,15 +30,18 @@ import coil3.request.ImageRequest
 import coil3.request.SuccessResult
 import coil3.request.crossfade
 import com.hse.hseproject.domain.entity.Event
+import com.hse.hseproject.domain.entity.EventDuration
 import com.hse.hseproject.domain.entity.Format
 import java.text.SimpleDateFormat
 import java.util.Date
+import java.util.Locale
 
 @Composable
 fun EventShortScreen(
     navController: NavController,
     event: Event
 ) {
+
 
     val colorScheme = MaterialTheme.colorScheme
 
@@ -171,7 +174,7 @@ fun EventShortScreen(
                         .padding(
                             horizontal = 2.dp,
                         ),
-                    text = (SimpleDateFormat("dd/MM/yyyy", java.util.Locale.US)
+                    text = (SimpleDateFormat("d MMMM yyyy", Locale("ru"))
                         .format(Date(event.date))),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,

@@ -6,6 +6,8 @@ import com.google.gson.reflect.TypeToken
 import com.hse.hseproject.data.datasource.remote.event.RemoteDataSourceEvent
 import com.hse.hseproject.data.network.response.EventResponse
 import com.hse.hseproject.domain.entity.Event
+import com.hse.hseproject.domain.entity.EventDuration
+import com.hse.hseproject.domain.entity.Format
 import com.hse.hseproject.domain.repository.EventRepository
 import javax.inject.Inject
 
@@ -53,9 +55,28 @@ class EventRepositoryImpl @Inject constructor(
             return Result.success(event)
         } else {
             Log.e(TAG, "An error occurred while getting Event by Id: ${result.getOrNull()}")
-            return Result.failure(
-                Exception("An error occurred while getting Event by Id: ${result.getOrNull()}")
+            return Result.success(
+                Event(
+                    eventGlobalId = 123456789,
+                    name = "День открытых вдверей.",
+                    companyName = "ВШЭ",
+                    description = "День открытых дверей Высшей школы экономики – это твой шанс узнать всё о ведущем вузе страны: программы обучения, поступление, стипендии, стажировки, карьера и студенческая жизнь! Встречайся с преподавателями, участвуй в мастер-классах, задавай вопросы и почувствуй атмосферу ВШЭ! Узнай, как построить успешное будущее с дипломом ВШЭ! Приходи, регистрируйся, поступай!",
+                    photoLinks = listOf(
+                        "https://www.hse.ru/data/2022/09/07/1552691052/1118х745.png",
+                        "https://static.tildacdn.com/tild3762-6637-4538-b636-366465313963/HSE-17471_Preview_2_.jpg",
+                    ),
+                    city = "г. Нижний Новгород",
+                    address = "ул. Львовская 1В",
+                    date = 1757548800000,
+                    duration = EventDuration.ONE_HOUR,
+                    timeStart = "10:00",
+                    timeEnd = "16:00",
+                    format = Format.IN_PERSON
+                )
             )
+//            return Result.failure(
+//                Exception("An error occurred while getting Event by Id: ${result.getOrNull()}")
+//            )
         }
 
     }

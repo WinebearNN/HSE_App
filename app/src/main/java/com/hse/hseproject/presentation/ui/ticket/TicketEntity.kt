@@ -68,7 +68,7 @@ fun TicketEntityScreen(
                     // Generate QR code on background thread
                     qrBitmap = withContext(Dispatchers.Default) {
 //                        generateQRCode("EVENT_ID:12345|USER:user@example.com")
-                        generateQRCode("${ticket.ticketGlobalId}")
+                        generateQRCode("TICKET_ID:${ticket.ticketGlobalId}|EVENT_ID:${ticket.eventGlobalId}")
                     }
                 } catch (e: Exception) {
                     errorMessage = "Не удалось создать QR-код: ${e.message}"

@@ -5,6 +5,7 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.hse.hseproject.data.datasource.remote.ticket.RemoteDataSourceTicket
 import com.hse.hseproject.data.network.response.TicketResponse
+import com.hse.hseproject.domain.entity.Format
 import com.hse.hseproject.domain.entity.Ticket
 import com.hse.hseproject.domain.repository.TicketRepository
 import javax.inject.Inject
@@ -56,12 +57,27 @@ class TicketRepositoryImpl @Inject constructor(
             return Result.success(ticketsList)
 
         } else {
-
-            Log.e(TAG, "An error occurred while getting Ticket: ${result.getOrNull()}")
-
-            return Result.failure(
-                Exception("An error occurred while getting Ticket: ${result.getOrNull()}")
+            return Result.success(
+                listOf(
+                    Ticket(
+                        ticketGlobalId = 9191222312,
+                        userGlobalId = 13321,
+                        eventGlobalId = 999,
+                        eventName = "День открытых вдверей.",
+                        eventCompanyName = "ВШЭ.",
+                        eventAddress = "ул. Львовская 1В",
+                        eventFormat = Format.IN_PERSON,
+                        eventDate = 1757548800000,
+                        eventTimeStart = "10:00"
+                    )
+                )
             )
+
+//            Log.e(TAG, "An error occurred while getting Ticket: ${result.getOrNull()}")
+//
+//            return Result.failure(
+//                Exception("An error occurred while getting Ticket: ${result.getOrNull()}")
+//            )
 
         }
     }
@@ -78,11 +94,11 @@ class TicketRepositoryImpl @Inject constructor(
             return Result.success(Unit)
 
         } else {
-
+            return Result.success(Unit)
             Log.e(TAG, "An error occurred while creating Ticket: ${result.getOrNull()}")
-            return Result.failure(
-                Exception("An error occurred while creating Ticket: ${result.getOrNull()}")
-            )
+//            return Result.failure(
+//                Exception("An error occurred while creating Ticket: ${result.getOrNull()}")
+//            )
 
         }
     }
